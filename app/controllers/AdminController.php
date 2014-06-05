@@ -169,6 +169,11 @@ class AdminController extends BaseController {
         }
 
         echo json_encode($ret);
+        # отправляем уведомление
+        $adminEmail = DB::select("SELECT * FROM `setup` WHERE `name` = 'email' LIMIT 1");
+        if(!empty($model->email) && isset($adminEmail[0]) && !empty($adminEmail[0]->value)){
+            Mailman::make('emails.active_form', array('model' => $model))->setCss('/zurb.css')->from($model->email)->to($model->email)->subject('Новая анкета на сайте')->send();
+        }
         die();
     }
 }

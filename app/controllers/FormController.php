@@ -19,12 +19,19 @@ class FormController extends BaseController {
 
         $model = new WorkSheets();
 
-        if(Request::method() == 'POST'){
+        if(Request::method() == 'POST' || Request::ajax()){
             $inputs = Input::only(array('last_name', 'first_name','middle_name','birthday','email','city'));
             $model = new WorkSheets($inputs);
 
             if($model->validate()){
                 # проверяем дополнительные параметры
+
+                if (Request::ajax()) {
+                    $ret = array('error' => 0, 'message' => 'Данные прошли проверку (кроме картинки)');
+
+                    echo json_encode($ret);
+                    die();
+                }
 
                 if(Input::get('captcha') != Session::get('captcha_phrase')){ $model->errors()->add('captcha', 'Не верно введены символы с картинки.'); }
 
@@ -57,9 +64,30 @@ class FormController extends BaseController {
                             $model->save();
                         }
 
+                        # отправляем админу уведомление
+                        $adminEmail = DB::select("SELECT * FROM `setup` WHERE `name` = 'email' LIMIT 1");
+                        if(isset($adminEmail[0]) && !empty($adminEmail[0]->value)){
+                            Mailman::make('emails.new_form', array('model' => $model))->setCss('/zurb.css')->from($adminEmail[0]->value)->to($adminEmail[0]->value)->subject('Новая анкета на сайте')->send();
+                        }
+
+
                         Session::flash('successAddRecord', true);
                         return Redirect::to('/form');
                     }
+                }
+            } else {
+                if (Request::ajax()) {
+
+                    $errorListHTML = '<div class="alert alert-danger">Ошибки заполнения формы<ul>';
+                    foreach($model->errors()->all() as $error){
+                        $errorListHTML .= '<li>'.$error.'</li>';
+                    }
+                    $errorListHTML .= '</ul></div>';
+
+                    $ret = array('error' => 100, 'message' => 'Данные НЕ прошли проверку.', 'error_list' => $errorListHTML);
+
+                    echo json_encode($ret);
+                    die();
                 }
             }
         }

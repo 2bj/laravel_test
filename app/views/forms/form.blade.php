@@ -10,6 +10,7 @@
             </div>
         </div>
 @else
+    <div id="divForErrors">
     <?php if(is_array($model->errors()->all()) && count($model->errors()->all()) > 0){
                     echo '<div class="alert alert-danger">Ошибки заполнения формы<ul>';
                     foreach($model->errors()->all() as $error){
@@ -18,10 +19,11 @@
                 echo '</ul></div>';
             ?>
     <?php }    ?>
+    </div>
     <div class="row">
         <div class="col-md-11">
             <div class="well well-sm">
-                <?php echo Form::model($model, array('class' => 'form-horizontal', 'enctype'=>'multipart/form-data'));?>
+                <?php echo Form::model($model, array('class' => 'form-horizontal', 'enctype'=>'multipart/form-data', 'id' => 'formToSend'));?>
 
                 <fieldset>
                     <legend class="text-center">Заполните форму</legend>
@@ -106,7 +108,7 @@
 
                     <div class="form-group">
                         <div class="col-md-11 text-right">
-                            {{ Form::submit('Сохранить', array('class' => 'btn btn-primary btn-lg')); }}
+                            {{ Form::submit('Сохранить', array('class' => 'btn btn-primary btn-lg', 'id' => 'sendButtonAjax')); }}
                         </div>
                     </div>
 
@@ -146,6 +148,26 @@ $(function(){
             'error' : function(){ alert('Ошибка обращения к сереверу за списком городов.'); }
         });
 
+    });
+
+    $('#sendButtonAjax').on('click', function(){
+        $.ajax({
+            'url' : '/form',
+            'dataType' : 'json',
+            'type' : 'post',
+            'data' : $("#formToSend").serializeArray(),
+            'success' : function(ret){
+                /* соберем options */
+                if(ret.error == 0) {
+                    $("#formToSend").submit();
+                } else {
+                    $("#divForErrors").html(ret.error_list);
+                }
+            },
+            'error' : function(){ alert('Ошибка обращения к сереверу.'); }
+        });
+
+        return false;
     });
 });
 </script>
