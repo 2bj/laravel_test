@@ -11,7 +11,7 @@
  Target Server Version : 50614
  File Encoding         : utf-8
 
- Date: 06/04/2014 23:31:54 PM
+ Date: 06/05/2014 22:07:26 PM
 */
 
 SET NAMES utf8;
@@ -111,13 +111,13 @@ CREATE TABLE `worksheets` (
   PRIMARY KEY (`id`),
   KEY `city` (`city`),
   CONSTRAINT `worksheets_city_fk` FOREIGN KEY (`city`) REFERENCES `cities` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 --  Records of `worksheets`
 -- ----------------------------
 BEGIN;
-INSERT INTO `worksheets` VALUES ('2', 'Фамилия', 'Имя', 'Отчество', '2012-12-20 14:00:00', null, '2066520@gmail.com', '8', '1', '2014-06-04 00:39:01'), ('3', 'adasdsa', 'Илья', 'gg', '2012-12-20 14:00:00', null, 'a@b.ru', '1', '0', '2014-06-04 00:44:56'), ('4', 'Васильев', 'Илья', 'Мартынович', '2012-12-20 14:00:00', null, 'a@b.ru', '13', '0', '2014-06-04 20:22:29');
+INSERT INTO `worksheets` VALUES ('2', 'Фамилия', 'Имя', 'Отчество', '2012-12-20 14:00:00', null, '2066520@gmail.com', '8', '1', '2014-06-04 00:39:01'), ('3', 'adasdsa', 'Илья', 'gg', '2012-12-20 14:00:00', null, 'a@b.ru', '1', '0', '2014-06-04 00:44:56'), ('4', 'Васильев', 'Илья', 'Мартынович', '2012-12-20 14:00:00', null, 'a@b.ru', '13', '0', '2014-06-04 20:22:29'), ('6', 'Васильев', 'ddd', 'Мартынович', '2012-12-20 14:00:00', null, 'a@b.ru', '10', '1', '2014-06-05 21:43:25'), ('7', 'Васильев', 'ddd', 'Мартынович', '2012-12-20 14:00:00', null, 'a@b.ru', '10', '0', '2014-06-05 21:43:58'), ('8', 'Васильев', 'Илья', 'Мартынович', '2012-12-20 14:00:00', '8.jpg', 'a@b.ru', '7', '0', '2014-06-05 21:44:59');
 COMMIT;
 
 SET FOREIGN_KEY_CHECKS = 1;
