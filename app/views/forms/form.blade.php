@@ -21,8 +21,8 @@
     <div class="row">
         <div class="col-md-11">
             <div class="well well-sm">
-                <?php echo Form::model($model, array('class' => 'form-horizontal'));?>
-
+                <?php echo Form::model($model, array('class' => 'form-horizontal', 'enctype'=>'multipart/form-data'));?>
+                
                 <fieldset>
                     <legend class="text-center">Заполните форму</legend>
 
@@ -62,7 +62,6 @@
                         {{ Form::label('email', 'Электронная почта', array("class"=>"col-md-4 control-label")) }}
                         <div class="col-md-7">
                             {{ Form::text('email', $model->email, array('placeholder'=>'Электронная почта', 'class'=>'form-control')) }}
-                            <?php /* <input id="name" name="name" type="text" placeholder="Фамилия" class="form-control"> */ ?>
                         </div>
                     </div>
 
@@ -87,6 +86,22 @@
                                 <?php
                             }
                             ?>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        {{ Form::label('captcha', 'Введите символы с картинки', array("class"=>"col-md-4 control-label")) }}
+                        <div class="col-md-7">
+                            {{ Form::text('captcha', null, array('placeholder'=>'Введите символы с картинки', 'class'=>'form-control', 'autocomplete' =>'off')) }}
+                            <img src="<?php echo $captchaBuilder->inline(); ?>">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        {{ Form::label('captcha', 'Ваше фото', array("class"=>"col-md-4 control-label")) }}
+                        <div class="col-md-7">
+                            {{ Form::text('captcha', null, array('placeholder'=>'Введите символы с картинки', 'class'=>'form-control', 'autocomplete' =>'off')) }}
+                            <img src="<?php echo $captchaBuilder->inline(); ?>">
                         </div>
                     </div>
 

@@ -13,7 +13,10 @@
 
 Route::any('/',  function(){ return Redirect::to('/form'); });
 Route::any('/form',  "FormController@showForm");
+
 Route::get('/getCities',  "FormController@getCities");
+Route::get('/captcha',  "FormController@getCaptcha");
+
 Route::any('/backend/form',  "AdminController@loginForm");
 Route::any('/backend',  function(){ return Redirect::to('/backend/form'); });
 Route::any('/backend/user/login',  "AdminController@loginProcess");

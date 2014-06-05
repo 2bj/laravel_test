@@ -1,7 +1,7 @@
 <?php
+use Gregwar\Captcha\CaptchaBuilder;
 
 class FormController extends BaseController {
-
 	/*
 	|--------------------------------------------------------------------------
 	| Default Home Controller
@@ -24,10 +24,14 @@ class FormController extends BaseController {
             $model = new WorkSheets($inputs);
 
             if($model->validate()){
-                # если проверку прошло, то сохраняем
-                if($model->save()){
-                    Session::flash('successAddRecord', true);
-                    return Redirect::to('/form');
+                if(Input::get('captcha') != Session::get('captcha_phrase')){
+                    $model->errors()->add('captcha', 'Не верно введены символы с картинки');
+                } else {
+                    # если проверку прошло и каптча верная, то сохраняем
+                    if($model->save()){
+                        Session::flash('successAddRecord', true);
+                        return Redirect::to('/form');
+                    }
                 }
             }
         }
@@ -54,9 +58,11 @@ class FormController extends BaseController {
             }
         }
 
-		return View::make('layout', array( View::make('forms.form', array('model'=>$model, 'countries' => $countries, 'cities' => $cities)), 'activeMenu' => 'form') );
+        $captchaBuilder = new CaptchaBuilder;
+        $captchaBuilder->build();
+        Session::put("captcha_phrase", $captchaBuilder->getPhrase());
 
-		// View::make('forms.form');
+		return View::make('layout', array( View::make('forms.form', array('model'=>$model, 'countries' => $countries, 'cities' => $cities, 'captchaBuilder'=>$captchaBuilder)), 'activeMenu' => 'form') );
 	}
 
 
@@ -76,6 +82,11 @@ class FormController extends BaseController {
         echo json_encode($json);
         die();
 
+    }
+
+    public function getCaptcha(){
+
+        die();
     }
 
 }
