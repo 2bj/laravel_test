@@ -24,11 +24,39 @@ class FormController extends BaseController {
             $model = new WorkSheets($inputs);
 
             if($model->validate()){
-                if(Input::get('captcha') != Session::get('captcha_phrase')){
-                    $model->errors()->add('captcha', 'Не верно введены символы с картинки');
+                # проверяем дополнительные параметры
+
+                if(Input::get('captcha') != Session::get('captcha_phrase')){ $model->errors()->add('captcha', 'Не верно введены символы с картинки.'); }
+
+                if(!isset($_FILES['photo']['size']) || $_FILES['photo']['size'] < 0){
+                    $model->errors()->add('photo', 'Не добавлена ваша фотография.');
+                } elseif (!in_array($_FILES['photo']['type'], array('image/png', 'image/jpeg'))) {
+                    $model->errors()->add('photo', 'Фотография может быть только jpg или png.');
                 } else {
+                    # проверяем картинку на правильность типа и размера
+                    $pic = Image::make($_FILES['photo']['tmp_name']);
+                    if((450 > $pic->height() || $pic->height() > 2500 ) || (450 > $pic->width() || $pic->width() > 2500 )) {
+                        $model->errors()->add('photo', 'Каждая сторона фотографии должна быть более 450 и менее 2500 точек.');
+                    } else {
+                        $picNameData = pathinfo($_FILES['photo']['name']);
+                    }
+                }
+
+                 if(!$model->errors()->all()) {
                     # если проверку прошло и каптча верная, то сохраняем
                     if($model->save()){
+
+                        # и сохраняем картинку ((!) сделал не по ТЗ, поскольку более уникальным будет взять ID записи в качестве имени картинки),
+                        # но если делать по ТЗ, то имя картинки вычислял бы следущим образом
+                        # $model->photo_file_name = md5(rand(999,9999999).time())
+
+                        $fileNameToSave = dechex($model->id).".".strtolower($picNameData['extension']);
+
+                        if($pic->save(Config::get('settings.photo_a_path').DIRECTORY_SEPARATOR.$fileNameToSave)){
+                            $model->photo_file_name = $fileNameToSave;
+                            $model->save();
+                        }
+
                         Session::flash('successAddRecord', true);
                         return Redirect::to('/form');
                     }

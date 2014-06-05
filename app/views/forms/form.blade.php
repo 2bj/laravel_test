@@ -17,12 +17,12 @@
                     }
                 echo '</ul></div>';
             ?>
-    <?php } ?>
+    <?php }    ?>
     <div class="row">
         <div class="col-md-11">
             <div class="well well-sm">
                 <?php echo Form::model($model, array('class' => 'form-horizontal', 'enctype'=>'multipart/form-data'));?>
-                
+
                 <fieldset>
                     <legend class="text-center">Заполните форму</legend>
 
@@ -98,10 +98,9 @@
                     </div>
 
                     <div class="form-group">
-                        {{ Form::label('captcha', 'Ваше фото', array("class"=>"col-md-4 control-label")) }}
-                        <div class="col-md-7">
-                            {{ Form::text('captcha', null, array('placeholder'=>'Введите символы с картинки', 'class'=>'form-control', 'autocomplete' =>'off')) }}
-                            <img src="<?php echo $captchaBuilder->inline(); ?>">
+                        {{ Form::label('photo', 'Фотография', array("class"=>"col-md-4 control-label")) }}
+                        <div class="col-md-7" style="padding-top: 7px;">
+                            {{ Form::file('photo', array('class'=>'')) }}
                         </div>
                     </div>
 

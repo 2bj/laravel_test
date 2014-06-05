@@ -15,6 +15,9 @@
         <strong>Город:</strong> {{ $cityM->name  }}<br>
         <?php $countryM = Countries::find($cityM->country_id); ?>
         <strong>Страна:</strong> {{ $countryM->name }}<br>
+        @if (!empty($model->photo_file_name))
+        <br><strong>Фотография</strong> <br><img src="{{ Config::get('settings.photo_url').'/'.$model->photo_file_name }}" style="max-width: 500px;">
+        @endif
     </p>
 </div>
 @stop

@@ -7,8 +7,15 @@
 		"laravel/framework": "4.2.*",
         "laravelbook/ardent": "dev-master",
         "gregwar/captcha": "dev-master",
-        "intervention/image": "dev-master"
+        "intervention/image": "dev-master",
+        "waavi/mailman": "*"
 	},
+    "repositories": [
+        {
+            "type": "vcs",
+            "url":  "git@github.com:Waavi/mailman.git"
+        }
+    ],
 	"autoload": {
 		"classmap": [
 			"app/commands",

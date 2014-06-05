@@ -93,6 +93,29 @@ class AdminController extends BaseController {
                 $model->city = Input::get('city');
                 if($model->save()){
                     Session::flash('message', "Запись успешно обновлена.");
+
+                    if(isset($_FILES['photo']['size']) && $_FILES['photo']['size'] > 0){
+
+                        # удаляем старую фотографию если она существует
+                        if(!empty($model->photo_file_name) && file_exists(Config::get('settings.photo_a_path').DIRECTORY_SEPARATOR.$model->photo_file_name)){
+                            if(unlink(Config::get('settings.photo_a_path').DIRECTORY_SEPARATOR.$model->photo_file_name)){
+                                $model->photo_file_name = null;
+                                $model->save();
+                            }
+                        }
+
+                        # закачиваем и сохраняем новую фотографию
+                        $pic = Image::make($_FILES['photo']['tmp_name']);
+                        $picNameData = pathinfo($_FILES['photo']['name']);
+
+                        $fileNameToSave = dechex($model->id).".".strtolower($picNameData['extension']);
+
+                        if($pic->save(Config::get('settings.photo_a_path').DIRECTORY_SEPARATOR.$fileNameToSave)){
+                            $model->photo_file_name = $fileNameToSave;
+                            $model->save();
+                        }
+                    }
+
                 } else {
                     Session::flash('message', "Запись не обновлена, поскльку при обновлении произошли ошибки.");
                 }
@@ -115,6 +138,10 @@ class AdminController extends BaseController {
     public function deleteForm($id){
         if(!Auth::check()) { return Redirect::to('/backend/user/logout'); }
         $model = WorkSheets::find($id);
+        if(!empty($model->photo_file_name) && file_exists(Config::get('settings.photo_a_path').DIRECTORY_SEPARATOR.$model->photo_file_name)){
+            # удаляем фотографию
+            unlink(Config::get('settings.photo_a_path').DIRECTORY_SEPARATOR.$model->photo_file_name);
+        }
         $model->delete();
 
         Session::flash('message', 'Запись удалена');

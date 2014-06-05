@@ -16,7 +16,7 @@
 
 <!-- if there are creation errors, they will show here -->
 
-{{ Form::model($model, array('method' => 'POST')) }}
+{{ Form::model($model, array('method' => 'POST', 'enctype'=>'multipart/form-data')) }}
 
 <div class="form-group">
     {{ Form::label('last_name', 'Фамилия') }}
@@ -70,11 +70,21 @@
     {{ Form::select('city', $aCities, $model->city, array('class' => 'form-control')) }}
 </div>
 
+<div class="form-group">
+    {{ Form::label('photo', 'Фотография')}}
+    <br>
+    <div class="col-md-7" style="padding-top: 7px;">
+        {{ Form::file('photo', array('class'=>'')) }}
+    </div>
+    @if (!is_dir(Config::get('settings.photo_a_path').'/'.$model->photo_file_name) && file_exists(Config::get('settings.photo_a_path').'/'.$model->photo_file_name))
+    <br><br><img src="{{ Config::get('settings.photo_url').'/'.$model->photo_file_name }}" style="max-width: 500px;">
+    @endif
+    <div style="clear: both;"></div>
+</div>
 
-
-
+<div style="margin-top: 30px;">
 {{ Form::submit('Сохранить', array('class' => 'btn btn-primary')) }}
-
+</div>
 {{ Form::close() }}
 
 
